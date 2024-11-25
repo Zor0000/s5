@@ -1,0 +1,82 @@
+# Task 1: Data Preprocessing and Handling Missing Values
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_selection import RFE
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.decomposition import PCA
+
+data = pd.read_csv('Titanic-Dataset.csv')
+data.head()
+
+missing_values = data.isnull().sum()
+print(missing_values)
+
+data['Age'] = data['Age'].fillna(data['Age'].median())
+
+data['Cabin'] = data['Cabin'].fillna("U")
+data['Embarked'] = data['Embarked'].fillna(data['Embarked'].mode()[0])
+
+data.drop(columns=['Ticket', 'Cabin'], inplace=True)
+data.isnull().sum()
+
+# Task 2 Encoding categorical variables
+
+categorical_cols = ['Sex', 'Embarked']
+
+label_encoder = LabelEncoder()
+data['Sex'] = label_encoder.fit_transform(data['Sex'])
+
+data = pd.get_dummies(data, columns=['Embarked'], drop_first=True)
+
+data.head()
+
+# Task 3: Creating New Features
+
+data['FamilySize'] = data['SibSp'] + data['Parch'] + 1
+
+data['IsAlone'] = (data['FamilySize'] == 1).astype(int)
+
+data[['FamilySize', 'IsAlone']].head()
+
+# Task 4: Feature Scaling
+
+numerical_cols = ['Age', 'Fare', 'FamilySize']
+scaler = StandardScaler()
+data[numerical_cols] = scaler.fit_transform(data[numerical_cols])
+
+data[numerical_cols].head()
+
+# Task 5: Feature Selection Mechanisms
+
+1. Univariate Selection using Chi-Square Test
+
+X = data.drop(columns=['Survived', 'PassengerId', 'Name'])
+y = data['Survived']
+X = X.select_dtypes(include=['int64', 'uint8', 'float64']).clip(lower=0)
+chi2_selector = SelectKBest(score_func=chi2, k=5)
+X_chi2 = chi2_selector.fit_transform(X, y)
+chi2_selector.scores_
+
+Recursive Feature Elimination (RFE)
+
+model = LogisticRegression()
+rfe = RFE(estimator=model, n_features_to_select=5)
+X_rfe = rfe.fit_transform(X, y)
+rfe.support_
+
+3. Feature Importance using Random Forest
+
+rf_model = RandomForestClassifier()
+rf_model.fit(X, y)
+importance = rf_model.feature_importances_
+importance
+
+# Task 6: Dimensionality Reduction with PCA
+
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+pca.explained_variance_ratio_
