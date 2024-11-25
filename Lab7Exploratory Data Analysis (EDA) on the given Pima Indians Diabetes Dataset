@@ -1,0 +1,58 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the Dataset
+
+url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.data.csv"
+columns = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age', 'Outcome']
+df = pd.read_csv(url, names=columns)
+
+# No of rows and columns in dataset
+
+print(f"Number of rows {df.shape[0]}\nNumber of columns {df.shape[1]}")
+
+# First 10 rows of dataset
+
+df.head(10)
+
+# Dimension of Dataset
+
+print(f"Dataset Dimension{ df.shape}")
+
+# Missing Values in dataset
+
+missing_values = df.isnull().sum()
+missing_values
+
+# Statistical summary of data
+
+df.describe()
+
+# Visualisation
+
+Scatterplot matrix
+
+sns.pairplot(df, hue='Outcome')
+plt.show()
+
+Heatmap of correlations
+
+plt.figure(figsize=(10,8))
+sns.heatmap(df.corr(), annot=True, cmap="coolwarm", fmt='.2f', linewidth=0.5)
+plt.show()
+
+Box plot
+
+plt.figure(figsize=(10,8))
+sns.boxplot(data=df)
+plt.xticks(rotation=90)
+plt.show()
+
+Bar plot
+
+plt.figure(figsize=(10,8))
+sns.countplot(x='Outcome', data=df)
+plt.title('Outcome distribution')
+plt.show()
