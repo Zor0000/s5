@@ -1,0 +1,45 @@
+Uniform Distribution
+import matplotlib.pyplot as plt
+import numpy as np
+
+data=np.random.uniform(0,1,1000)
+plt.hist(data, bins=20, density=True, alpha=0.6, color='g')
+plt.title("Uniform Distribution")
+plt.xlabel("Values")
+plt.ylabel("Frequency")
+plt.show()
+
+Normal Distribution
+data = np.random.normal(0,1,1000)
+plt.hist(data, bins = 20, density = True, alpha = 0.6, color = 'b')
+plt.title("Normal Distribution")
+plt.xlabel("Values")
+plt.ylabel("Freq")
+plt.show()
+
+Exponential Distribution
+data = np.random.exponential(1/0.5, 1000)
+plt.hist(data, density = True, bins=20, alpha=0.6, color = 'r')
+plt.title("Exponential Dist")
+plt.xlabel('Values')
+plt.ylabel('Freq')
+plt.show()
+
+Binomial Distribution
+data = np.random.binomial(20, 0.3, 1000)
+plt.hist(data, density = True, bins=20, alpha=0.6, color = 'r')
+plt.title("Binomial Dist")
+plt.xlabel('Values')
+plt.ylabel('Freq')
+plt.show()
+
+Poisson Distribution
+data = np.random.poisson(5, 1000)
+plt.hist(data, density = True, bins=20, alpha=0.6, color = 'c')
+plt.title("poisson Dist")
+plt.xlabel('Values')
+plt.ylabel('Freq')
+plt.show()
+
+
+
