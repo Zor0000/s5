@@ -1,0 +1,61 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import norm
+from collections import Counter
+
+from sklearn.datasets import load_iris
+iris_data = load_iris()
+df = pd.DataFrame(data=iris_data.data, columns=iris_data.feature_names)
+df['species'] = pd.Categorical.from_codes(iris_data.target, iris_data.target_names)
+
+print("Dataset Overview:")
+df.info()
+print("\nSummary Statistics:")
+df.describe()
+
+PMF
+
+sepal_length = df['sepal length (cm)']
+def calculate_pmf(data):
+    counts = Counter(data)
+    total_count = len(data)
+    pmf = {k: v / total_count for k, v in counts.items()}
+    return pmf
+
+pmf = calculate_pmf(sepal_length)
+plt.bar(pmf.keys(), pmf.values())
+plt.xlabel('Sepal Length (cm)')
+plt.ylabel('PMF')
+plt.title('Probability Mass Function (PMF) of Sepal Length')
+plt.show()
+
+PDF
+
+sns.histplot(sepal_length, kde=True, stat="density", bins=10, color="blue")
+plt.title('Probability Density Function (PDF) of Sepal Length')
+plt.xlabel('Sepal Length (cm)')
+plt.ylabel('Density')
+plt.show()
+
+CDF
+
+sorted_data = np.sort(sepal_length)
+cdf = np.arange(1, len(sorted_data) + 1) / len(sorted_data)
+plt.plot(sorted_data, cdf, marker='.', linestyle='none')
+plt.xlabel('Sepal Length (cm)')
+plt.ylabel('CDF')
+plt.title('Cumulative Distribution Function (CDF) of Sepal Length')
+plt.show()
+
+Summary Statistics
+
+mean_value = np.mean(sepal_length)
+std_dev_value = np.std(sepal_length)
+min_value = np.min(sepal_length)
+max_value = np.max(sepal_length)
+print(f"Mean: {mean_value}")
+print(f"Standard Deviation: {std_dev_value}")
+print(f"Minimum: {min_value}")
+print(f"Maximum: {max_value}")
