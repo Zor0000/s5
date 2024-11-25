@@ -1,0 +1,113 @@
+from collections import Counter
+import math
+
+# Data
+data = [
+    {'sepal length': 5.1, 'sepal width': 3.5, 'species': 'setosa', 'color': 'red'},
+    {'sepal length': 4.9, 'sepal width': 3.0, 'species': 'setosa', 'color': 'blue'},
+    {'sepal length': 4.7, 'sepal width': 3.2, 'species': 'setosa', 'color': 'red'},
+    {'sepal length': 4.6, 'sepal width': 3.1, 'species': 'setosa', 'color': 'blue'},
+    {'sepal length': 5.0, 'sepal width': 3.6, 'species': 'setosa', 'color': 'red'},
+    {'sepal length': 5.4, 'sepal width': 3.9, 'species': 'versicolor', 'color': 'green'},
+    {'sepal length': 6.4, 'sepal width': 3.2, 'species': 'versicolor', 'color': 'green'},
+    {'sepal length': 6.9, 'sepal width': 3.1, 'species': 'virginica', 'color': 'yellow'},
+    {'sepal length': 5.5, 'sepal width': 2.3, 'species': 'virginica', 'color': 'yellow'},
+    {'sepal length': 6.5, 'sepal width': 3.0, 'species': 'virginica', 'color': 'green'}
+]
+
+# Identify numerical and categorical variables
+def identify_variables(data):
+    sample_row = data[0]
+    numerical_vars = []
+    categorical_vars = []
+
+    for key, value in sample_row.items():
+        if isinstance(value, (int, float)):
+            numerical_vars.append(key)
+        else:
+            categorical_vars.append(key)
+
+    return numerical_vars, categorical_vars
+
+# Create a contingency table for categorical variables
+def create_contingency_table(data, cat_var1, cat_var2):
+    table = {}
+    for row in data:
+        key = (row[cat_var1], row[cat_var2])
+        if key not in table:
+            table[key] = 1
+        else:
+            table[key] += 1
+    return table
+
+# Calculate statistics for numerical variables
+def calculate_statistics(data, numerical_vars):
+    for num_var in numerical_vars:
+        try:
+            # Ensure all values are numeric
+            values = [float(row[num_var]) for row in data]
+
+            # Calculations
+            mean = sum(values) / len(values)
+            median = (
+                sorted(values)[len(values) // 2]
+                if len(values) % 2 == 1
+                else (sorted(values)[len(values) // 2 - 1] + sorted(values)[len(values) // 2]) / 2
+            )
+            mode = Counter(values).most_common(1)[0][0]
+            variance = sum((x - mean) ** 2 for x in values) / len(values)
+            std_dev = math.sqrt(variance)
+            q1 = sorted(values)[len(values) // 4]
+            q3 = sorted(values)[3 * len(values) // 4]
+            iqr = q3 - q1
+
+            # Print results
+            print(f"{num_var}:")
+            print(f"  Mean: {mean}")
+            print(f"  Median: {median}")
+            print(f"  Mode: {mode}")
+            print(f"  Variance: {variance}")
+            print(f"  Standard Deviation: {std_dev}")
+            print(f"  Q1: {q1}")
+            print(f"  Q3: {q3}")
+            print(f"  IQR: {iqr}")
+
+        except ValueError:
+            print(f"Error: Non-numeric data found in column '{num_var}'.")
+
+# Categorize categorical variables
+def categorize_categorical_vars(data, categorical_vars):
+    binary_vars = []
+    nominal_vars = []
+    ordinal_vars = []
+
+    for var in categorical_vars:
+        unique_vals = set(row[var] for row in data)
+
+        if len(unique_vals) == 2:
+            binary_vars.append(var)
+        elif len(unique_vals) > 2:
+            nominal_vars.append(var)
+        else:
+            ordinal_vars.append(var)
+
+    return binary_vars, nominal_vars, ordinal_vars
+
+# Main Program Execution
+numerical_vars, categorical_vars = identify_variables(data)
+
+if len(categorical_vars) >= 2:
+    # Use two categorical variables for the contingency table
+    table = create_contingency_table(data, categorical_vars[0], categorical_vars[1])
+    print(f"Contingency Table for {categorical_vars[0]} and {categorical_vars[1]}: {table}")
+else:
+    print("Not enough categorical variables for a contingency table")
+
+# Calculate statistics for numerical variables
+calculate_statistics(data, numerical_vars)
+
+# Categorize categorical variables
+binary_vars, nominal_vars, ordinal_vars = categorize_categorical_vars(data, categorical_vars)
+print(f"Binary Variables: {binary_vars}")
+print(f"Nominal Variables: {nominal_vars}")
+print(f"Ordinal Variables: {ordinal_vars}")
